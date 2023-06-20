@@ -97,7 +97,7 @@ public final class Mine extends JavaPlugin implements Listener {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("coal_level");
             int moneyAmount = config.getInt("coal_money");
-            int money = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
+            int money = getMoney(player);
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
@@ -110,21 +110,21 @@ public final class Mine extends JavaPlugin implements Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender instanceof Player)) return super.onCommand(sender, command, label, args);
+        Player player = (Player) sender;
 
         switch (command.getName()) {
 
             case "money" -> {
-                UUID uuid = ((Player) sender).getUniqueId();
-                int getLevel = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
-                sender.sendMessage("あなたの所持金は「" + getLevel + "」です。");
+                int money = getMoney(player);
+                sender.sendMessage("あなたの所持金は「" + money + "」です。");
             }
 
             // TODO : プレイヤー名が間違っているときのメッセージを追加する
             case "set" -> {
                 if (args.length > 1) {
                     String playerName = args[0];
-                    Player player = Bukkit.getPlayer(playerName);
-                    UUID uuid = Objects.requireNonNull(player).getUniqueId();
+                    Player targetPlayer = Bukkit.getPlayer(playerName);
+                    UUID uuid = Objects.requireNonNull(targetPlayer).getUniqueId();
                     moneyData.set(uuid + ".money", args[1]);
                     sender.sendMessage(args[0] + "さんの所持金を「" + args[1] + "」にしました。");
                 } else {
@@ -148,7 +148,7 @@ public final class Mine extends JavaPlugin implements Listener {
         if (action == Action.RIGHT_CLICK_BLOCK && item != null && item.getType() == Material.PAPER
                 && block != null && block.getType() == Material.CHEST) {
             UUID uuid = player.getUniqueId();
-            int money = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
+            int money = getMoney(player);
             if (money >= 100) {
                 int result = Integer.parseInt(String.valueOf(money - 100));
                 moneyData.set(uuid + ".money", result);
