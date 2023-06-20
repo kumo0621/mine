@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,14 +23,16 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class Mine extends JavaPlugin implements org.bukkit.event.Listener {
+public final class Mine extends JavaPlugin implements Listener {
+
+    public static FileConfiguration config;
+    public static FileConfiguration moneyData;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         saveDefaultConfig();
         config = getConfig();
-        money = loadConfig("money.yml");
+        moneyData = loadConfig("money.yml");
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -52,15 +55,11 @@ public final class Mine extends JavaPlugin implements org.bukkit.event.Listener 
         }
     }
 
-    FileConfiguration config;
-    FileConfiguration money;
-
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         saveConfig();
-        // config2ファイルを保存
-        saveCustomConfig(money, "money.yml");
+        // moneyファイルを保存
+        saveCustomConfig(moneyData, "money.yml");
     }
 
     @EventHandler
@@ -69,16 +68,16 @@ public final class Mine extends JavaPlugin implements org.bukkit.event.Listener 
         UUID uuid = player.getUniqueId();
 
         // プレイヤーデータからフラグを取得
-        boolean isFirstJoin = money.getBoolean(uuid.toString() + ".firstJoin", true);
+        boolean isFirstJoin = moneyData.getBoolean(uuid + ".firstJoin", true);
 
         if (isFirstJoin) {
             // 初回ログイン時の処理
-            money.set(uuid.toString() + ".firstJoin", false);
-            money.set(uuid.toString() + ".money", 0);
+            moneyData.set(uuid + ".firstJoin", false);
+            moneyData.set(uuid + ".money", 0);
 
             // 保存処理
             try {
-                money.save(new File(getDataFolder(), "money.yml"));
+                moneyData.save(new File(getDataFolder(), "money.yml"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,7 +86,6 @@ public final class Mine extends JavaPlugin implements org.bukkit.event.Listener 
             player.sendMessage("初回ログインです。所持金が初期化されました。");
         }
     }
-
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -98,38 +96,48 @@ public final class Mine extends JavaPlugin implements org.bukkit.event.Listener 
         if (config.contains("allowed-blocks") && config.getStringList("allowed-blocks").contains(material.toString())) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("coal_level");
-            int getLevel = Integer.parseInt(Objects.requireNonNull(money.getString(uuid.toString() + ".money")));
-            int result = Integer.parseInt(String.valueOf(getLevel += expAmount));
-            money.set(uuid.toString() + ".money", result);
+            int moneyAmount = config.getInt("coal_money");
+            int money = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
         }
+        // configファイルに保存
+        saveCustomConfig(moneyData, "money.yml");
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (command.getName().equals("money")) {
-            if (sender instanceof Player) {
-                if (args.length == 0) {
-                    UUID uuid = ((Player) sender).getUniqueId();
-                        int getLevel = Integer.parseInt(Objects.requireNonNull(money.getString(uuid.toString() + ".money")));
-                        sender.sendMessage("あなたの所持金は「" + getLevel + "」です。");
-                }
+
+        if (!(sender instanceof Player)) return super.onCommand(sender, command, label, args);
+
+        switch (command.getName()) {
+
+            case "money" -> {
+                UUID uuid = ((Player) sender).getUniqueId();
+                int getLevel = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
+                sender.sendMessage("あなたの所持金は「" + getLevel + "」です。");
             }
-        }
-        if (command.getName().equals("set")) {
-            if (sender instanceof Player) {
+
+            // TODO : プレイヤー名が間違っているときのメッセージを追加する
+            case "set" -> {
                 if (args.length > 1) {
                     String playerName = args[0];
                     Player player = Bukkit.getPlayer(playerName);
                     UUID uuid = Objects.requireNonNull(player).getUniqueId();
-                    money.set(uuid.toString() + ".money", args[1]);
-
-                    sender.sendMessage(args[0]+"さんの所持金を「" + args[1] + "」にしました。");
+                    moneyData.set(uuid + ".money", args[1]);
+                    sender.sendMessage(args[0] + "さんの所持金を「" + args[1] + "」にしました。");
+                } else {
+                    sender.sendMessage("数値を指定してください。");
                 }
             }
         }
+
+        // configファイルに保存
+        saveCustomConfig(moneyData, "money.yml");
         return super.onCommand(sender, command, label, args);
     }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -140,16 +148,26 @@ public final class Mine extends JavaPlugin implements org.bukkit.event.Listener 
         if (action == Action.RIGHT_CLICK_BLOCK && item != null && item.getType() == Material.PAPER
                 && block != null && block.getType() == Material.CHEST) {
             UUID uuid = player.getUniqueId();
-            int getLevel = Integer.parseInt(Objects.requireNonNull(money.getString(uuid.toString() + ".money")));
-            if(getLevel>=100) {
-                int result = Integer.parseInt(String.valueOf(getLevel -= 100));
-                money.set(uuid.toString() + ".money", result);
+            int money = Integer.parseInt(Objects.requireNonNull(moneyData.getString(uuid + ".money")));
+            if (money >= 100) {
+                int result = Integer.parseInt(String.valueOf(money - 100));
+                moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
                 ItemStack itemStack = new ItemStack(Material.PAPER, 1); // 追加するアイテムの種類と個数を指定
                 player.getInventory().addItem(itemStack);
                 player.sendMessage("ガチャチケットと交換しました。");
             }
         }
+        // configファイルに保存
+        saveCustomConfig(moneyData, "money.yml");
+    }
+
+    public static int getMoney(Player player) {
+        return Integer.parseInt(Objects.requireNonNull(moneyData.getString(player.getUniqueId() + ".money")));
+    }
+
+    public static int getLevel(Player player) {
+        return player.getLevel();
     }
 }
 
