@@ -1,0 +1,14 @@
+name: mine
+version: '${project.version}'
+main: com.github.kumo0621.mine.Mine
+api-version: "1.20"
+commands:
+  money:
+    permission: hito
+  set:
+    permission: op
+permissions:
+  op:
+    default: op
+  hito:
+    default: true
