@@ -169,7 +169,7 @@ public final class Mine extends JavaPlugin implements Listener {
                     player.sendMessage("レアツルハシゲット");
                 }
             }
-        }else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
+        } else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 500) {
