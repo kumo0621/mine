@@ -95,8 +95,8 @@ public final class Mine extends JavaPlugin implements Listener {
         Material material = block.getType();
         if (config.contains("allowed-blocks") && config.getStringList("allowed-blocks").contains(material.toString())) {
             // 設定ファイルで許可されたブロックの場合の処理
-            int expAmount = config.getInt("coal_level");
-            int moneyAmount = config.getInt("coal_money");
+            int expAmount = config.getInt("coal.level");
+            int moneyAmount = config.getInt("coal.money");
             int money = getMoney(player);
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
@@ -109,8 +109,7 @@ public final class Mine extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player)) return super.onCommand(sender, command, label, args);
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return super.onCommand(sender, command, label, args);
 
         switch (command.getName()) {
 
