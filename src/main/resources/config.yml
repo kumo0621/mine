@@ -1,4 +1,5 @@
 allowed-blocks:
   - COAL_ORE
-coal_level: 1
-coal_money: 1
+coal:
+  - level: 1
+  - money: 1
