@@ -186,11 +186,8 @@ public final class Mine extends JavaPlugin implements Listener {
                 }
             }
         } else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
-            int money = getMoney(player);
-            if (money >= 500) {
                 event.setCancelled(true);
                 openMenu(player);
-            }
         }
         // configファイルに保存
         saveCustomConfig(moneyData, "money.yml");
@@ -232,7 +229,6 @@ public final class Mine extends JavaPlugin implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         // プレイヤーがメニューをクリックしたときの処理
-
         if (event.getView().getTitle().equals("強化メニュー")) {
             // クリックしたインベントリがメニューであるかを確認
 
@@ -245,21 +241,25 @@ public final class Mine extends JavaPlugin implements Listener {
                     Player player = (Player) event.getWhoClicked();
                     UUID uuid = player.getUniqueId();
                     int money = getMoney(player);
-                    int result = Integer.parseInt(String.valueOf(money - 500));
-                    moneyData.set(uuid + ".money", result);
-                    event.setCancelled(true);
-                    player.getInventory().addItem(Items.intermediatePickaxe);
-                    player.sendMessage("ツルハシを強化しました。");
+                    if (money >= 500) {
+                        int result = Integer.parseInt(String.valueOf(money - 500));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.intermediatePickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
                 }
                 if (meta != null && meta.getCustomModelData() == 3) {
                     Player player = (Player) event.getWhoClicked();
                     UUID uuid = player.getUniqueId();
                     int money = getMoney(player);
-                    int result = Integer.parseInt(String.valueOf(money - 3000));
-                    moneyData.set(uuid + ".money", result);
-                    event.setCancelled(true);
-                    player.getInventory().addItem(Items.hardPickaxe);
-                    player.sendMessage("ツルハシを強化しました。");
+                    if (money >= 500) {
+                        int result = Integer.parseInt(String.valueOf(money - 3000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.hardPickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
                 }
             }
         }
