@@ -1,22 +1,24 @@
 package com.github.kumo0621.mine;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.enchantments.Enchantment;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +76,27 @@ public final class Mine extends JavaPlugin implements Listener {
             // 初回ログイン時の処理
             moneyData.set(uuid + ".firstJoin", false);
             moneyData.set(uuid + ".money", 0);
+            // アイテムの作成
+            ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+
+            // アイテムのメタデータを取得
+            ItemMeta meta = pickaxe.getItemMeta();
+
+            // アイテムのカスタムモデルデータを設定
+            meta.setCustomModelData(1);
+
+            // アイテムを壊れないように設定
+            meta.setUnbreakable(true);
+
+            // アイテムの名前を設定
+            meta.setDisplayName("初心者のツルハシ");
+
+            // アイテムにメタデータを適用
+            pickaxe.setItemMeta(meta);
+
+            // プレイヤーにアイテムを与える
+            player.getInventory().addItem(pickaxe);
+        }
 
             // 保存処理
             try {
@@ -85,7 +108,6 @@ public final class Mine extends JavaPlugin implements Listener {
             // 初回ログイン時のメッセージを送信
             player.sendMessage("初回ログインです。所持金が初期化されました。");
         }
-    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -144,17 +166,46 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemStack item = event.getItem();
         Block block = event.getClickedBlock();
 
-        if (action == Action.RIGHT_CLICK_BLOCK && item != null && item.getType() == Material.PAPER
-                && block != null && block.getType() == Material.CHEST) {
+        if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.CHEST) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 100) {
                 int result = Integer.parseInt(String.valueOf(money - 100));
                 moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
-                ItemStack itemStack = new ItemStack(Material.PAPER, 1); // 追加するアイテムの種類と個数を指定
-                player.getInventory().addItem(itemStack);
-                player.sendMessage("ガチャチケットと交換しました。");
+                int up = RandomCount.random();
+                if(up<99) {
+                    ItemStack itemStack = new ItemStack(Material.COAL, 1); // 追加するアイテムの種類と個数を指定
+                    player.getInventory().addItem(itemStack);
+                    player.sendMessage("ハズレ");
+                }else{
+                    ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+                    ItemMeta meta = pickaxe.getItemMeta();
+                    meta.setCustomModelData(4);
+                    meta.setUnbreakable(true);
+                    meta.setDisplayName("レアツルハシ");
+                    meta.addEnchant(Enchantment.DIG_SPEED, 50, true);
+                    pickaxe.setItemMeta(meta);
+                    player.getInventory().addItem(pickaxe);
+                    player.sendMessage("レアツルハシゲット");
+                }
+            }
+        }else if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.SHULKER_BOX) {
+            UUID uuid = player.getUniqueId();
+            int money = getMoney(player);
+            if (money >= 500) {
+                int result = Integer.parseInt(String.valueOf(money - 500));
+                moneyData.set(uuid + ".money", result);
+                event.setCancelled(true);
+                ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+                ItemMeta meta = pickaxe.getItemMeta();
+                meta.setCustomModelData(2);
+                meta.setUnbreakable(true);
+                meta.setDisplayName("中級者のツルハシ");
+                meta.addEnchant(Enchantment.DIG_SPEED, 10, true);
+                pickaxe.setItemMeta(meta);
+                player.getInventory().addItem(pickaxe);
+                player.sendMessage("ツルハシを強化しました。");
             }
         }
         // configファイルに保存
