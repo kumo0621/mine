@@ -7,18 +7,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.bukkit.enchantments.Enchantment;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,11 +102,26 @@ public final class Mine extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         Block block = event.getBlock();
-        Material material = block.getType();
-        if (config.contains("allowed-blocks") && config.getStringList("allowed-blocks").contains(material.toString())) {
+        if (block.getType() == Material.COAL_ORE) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("coal.level");
             int moneyAmount = config.getInt("coal.money");
+            int money = getMoney(player);
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
+            player.giveExp(expAmount);
+        } else if(block.getType()==Material.NETHERRACK) {
+            // 設定ファイルで許可されたブロックの場合の処理
+            int expAmount = config.getInt("netherrack.level");
+            int moneyAmount = config.getInt("netherrack.money");
+            int money = getMoney(player);
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
+            player.giveExp(expAmount);
+        } else if(block.getType()==Material.STONE) {
+            // 設定ファイルで許可されたブロックの場合の処理
+            int expAmount = config.getInt("stone.level");
+            int moneyAmount = config.getInt("stone.money");
             int money = getMoney(player);
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
@@ -149,14 +166,13 @@ public final class Mine extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        ItemStack item = event.getItem();
         Block block = event.getClickedBlock();
 
         if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
-            if (money >= 100) {
-                int result = Integer.parseInt(String.valueOf(money - 100));
+            if (money >= 1000) {
+                int result = Integer.parseInt(String.valueOf(money - 1000));
                 moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
                 int up = RandomCount.random();
@@ -170,14 +186,10 @@ public final class Mine extends JavaPlugin implements Listener {
                 }
             }
         } else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
-            UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 500) {
-                int result = Integer.parseInt(String.valueOf(money - 500));
-                moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
-                player.getInventory().addItem(Items.intermediatePickaxe);
-                player.sendMessage("ツルハシを強化しました。");
+                openMenu(player);
             }
         }
         // configファイルに保存
@@ -190,5 +202,66 @@ public final class Mine extends JavaPlugin implements Listener {
 
     public static int getLevel(Player player) {
         return player.getLevel();
+    }
+    public void openMenu(Player player) {
+        // メニューを開く処理
+
+        // メニューのインベントリを作成
+        Inventory menu = Bukkit.createInventory(null, 9, "強化メニュー");
+
+        // メニューのアイテムを設定
+        ItemStack item = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("500");
+        meta.setCustomModelData(2);
+        meta.addEnchant(Enchantment.DIG_SPEED, 10, true);
+        item.setItemMeta(meta);
+        menu.setItem(0, item);
+        ItemStack item2 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta2 = item.getItemMeta();
+        meta2.setDisplayName("3000");
+        meta2.setCustomModelData(3);
+        meta2.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        item2.setItemMeta(meta2);
+        menu.setItem(1, item2);
+
+        //メニュー表示
+        player.openInventory(menu);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        // プレイヤーがメニューをクリックしたときの処理
+
+        if (event.getView().getTitle().equals("強化メニュー")) {
+            // クリックしたインベントリがメニューであるかを確認
+
+            event.setCancelled(true); // クリックイベントをキャンセル
+
+            if (event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.WOODEN_PICKAXE) {
+                // クリックしたアイテムがダイヤモンドの剣であるかを確認
+                ItemMeta meta = event.getCurrentItem().getItemMeta();
+                if (meta != null && meta.getCustomModelData() == 2) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    int result = Integer.parseInt(String.valueOf(money - 500));
+                    moneyData.set(uuid + ".money", result);
+                    event.setCancelled(true);
+                    player.getInventory().addItem(Items.intermediatePickaxe);
+                    player.sendMessage("ツルハシを強化しました。");
+                }
+                if (meta != null && meta.getCustomModelData() == 3) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    int result = Integer.parseInt(String.valueOf(money - 3000));
+                    moneyData.set(uuid + ".money", result);
+                    event.setCancelled(true);
+                    player.getInventory().addItem(Items.hardPickaxe);
+                    player.sendMessage("ツルハシを強化しました。");
+                }
+            }
+        }
     }
 }

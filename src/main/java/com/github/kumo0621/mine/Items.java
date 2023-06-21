@@ -10,6 +10,7 @@ public class Items {
     public static ItemStack beginnerPickaxe;
     public static ItemStack rarePickaxe;
     public static ItemStack intermediatePickaxe;
+    public static ItemStack hardPickaxe;
 
     public static void init() {
 
@@ -41,6 +42,14 @@ public class Items {
         itemMeta3.setDisplayName("中級者のツルハシ");
         itemMeta3.addEnchant(Enchantment.DIG_SPEED, 10, true);
         intermediatePickaxe.setItemMeta(itemMeta3);
+
+        hardPickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta4 = hardPickaxe.getItemMeta();
+        itemMeta4.setCustomModelData(3);
+        itemMeta4.setUnbreakable(true);
+        itemMeta4.setDisplayName("上級者のツルハシ");
+        itemMeta4.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        hardPickaxe.setItemMeta(itemMeta4);
     }
 
 }

@@ -1,5 +1,6 @@
-allowed-blocks:
-  - COAL_ORE
-coal:
-  - level: 1
-  - money: 1
+netherrack.level: 10
+netherrack.money: 1
+stone.level: 30
+stone.money: 3
+coal.level: 50
+coal.money: 5
