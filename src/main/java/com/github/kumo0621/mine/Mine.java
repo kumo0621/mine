@@ -36,6 +36,7 @@ public final class Mine extends JavaPlugin implements Listener {
         config = getConfig();
         moneyData = loadConfig("money.yml");
         getServer().getPluginManager().registerEvents(this, this);
+        Items.init();
     }
 
     private FileConfiguration loadConfig(String fileName) {
@@ -76,38 +77,23 @@ public final class Mine extends JavaPlugin implements Listener {
             // 初回ログイン時の処理
             moneyData.set(uuid + ".firstJoin", false);
             moneyData.set(uuid + ".money", 0);
-            // アイテムの作成
-            ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
 
-            // アイテムのメタデータを取得
-            ItemMeta meta = pickaxe.getItemMeta();
-
-            // アイテムのカスタムモデルデータを設定
-            meta.setCustomModelData(1);
-
-            // アイテムを壊れないように設定
-            meta.setUnbreakable(true);
-
-            // アイテムの名前を設定
-            meta.setDisplayName("初心者のツルハシ");
-
-            // アイテムにメタデータを適用
-            pickaxe.setItemMeta(meta);
 
             // プレイヤーにアイテムを与える
-            player.getInventory().addItem(pickaxe);
-        }
-
-            // 保存処理
-            try {
-                moneyData.save(new File(getDataFolder(), "money.yml"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            player.getInventory().addItem(Items.beginnerPickaxe);
 
             // 初回ログイン時のメッセージを送信
             player.sendMessage("初回ログインです。所持金が初期化されました。");
         }
+
+        // 保存処理
+        try {
+            moneyData.save(new File(getDataFolder(), "money.yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -174,37 +160,23 @@ public final class Mine extends JavaPlugin implements Listener {
                 moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
                 int up = RandomCount.random();
-                if(up<99) {
+                if (up < 99) {
                     ItemStack itemStack = new ItemStack(Material.COAL, 1); // 追加するアイテムの種類と個数を指定
                     player.getInventory().addItem(itemStack);
                     player.sendMessage("ハズレ");
-                }else{
-                    ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
-                    ItemMeta meta = pickaxe.getItemMeta();
-                    meta.setCustomModelData(4);
-                    meta.setUnbreakable(true);
-                    meta.setDisplayName("レアツルハシ");
-                    meta.addEnchant(Enchantment.DIG_SPEED, 50, true);
-                    pickaxe.setItemMeta(meta);
-                    player.getInventory().addItem(pickaxe);
+                } else {
+                    player.getInventory().addItem(Items.rarePickaxe);
                     player.sendMessage("レアツルハシゲット");
                 }
             }
-        }else if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.SHULKER_BOX) {
+        } else if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.SHULKER_BOX) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 500) {
                 int result = Integer.parseInt(String.valueOf(money - 500));
                 moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
-                ItemStack pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
-                ItemMeta meta = pickaxe.getItemMeta();
-                meta.setCustomModelData(2);
-                meta.setUnbreakable(true);
-                meta.setDisplayName("中級者のツルハシ");
-                meta.addEnchant(Enchantment.DIG_SPEED, 10, true);
-                pickaxe.setItemMeta(meta);
-                player.getInventory().addItem(pickaxe);
+                player.getInventory().addItem(Items.intermediatePickaxe);
                 player.sendMessage("ツルハシを強化しました。");
             }
         }
@@ -220,6 +192,3 @@ public final class Mine extends JavaPlugin implements Listener {
         return player.getLevel();
     }
 }
-
-
-
