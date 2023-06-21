@@ -152,7 +152,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemStack item = event.getItem();
         Block block = event.getClickedBlock();
 
-        if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.CHEST) {
+        if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 100) {
@@ -169,7 +169,7 @@ public final class Mine extends JavaPlugin implements Listener {
                     player.sendMessage("レアツルハシゲット");
                 }
             }
-        } else if (action == Action.RIGHT_CLICK_BLOCK && item != null && block != null && block.getType() == Material.SHULKER_BOX) {
+        }else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
             UUID uuid = player.getUniqueId();
             int money = getMoney(player);
             if (money >= 500) {
