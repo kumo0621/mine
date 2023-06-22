@@ -20,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -126,6 +128,30 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
+        } else if(block.getType()==Material.LAPIS_ORE) {
+            // 設定ファイルで許可されたブロックの場合の処理
+            int expAmount = config.getInt("lapis_ore.level");
+            int moneyAmount = config.getInt("lapis_ore.money");
+            int money = getMoney(player);
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
+            player.giveExp(expAmount);
+        } else if(block.getType()==Material.GOLD_ORE) {
+            // 設定ファイルで許可されたブロックの場合の処理
+            int expAmount = config.getInt("gold_ore.level");
+            int moneyAmount = config.getInt("gold_ore.money");
+            int money = getMoney(player);
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
+            player.giveExp(expAmount);
+        } else if(block.getType()==Material.IRON_ORE) {
+            // 設定ファイルで許可されたブロックの場合の処理
+            int expAmount = config.getInt("iron_ore.level");
+            int moneyAmount = config.getInt("iron_ore.money");
+            int money = getMoney(player);
+            int result = Integer.parseInt(String.valueOf(money + moneyAmount));
+            moneyData.set(uuid + ".money", result);
+            player.giveExp(expAmount);
         }
         // configファイルに保存
         saveCustomConfig(moneyData, "money.yml");
@@ -176,10 +202,20 @@ public final class Mine extends JavaPlugin implements Listener {
                 moneyData.set(uuid + ".money", result);
                 event.setCancelled(true);
                 int up = RandomCount.random();
-                if (up < 99) {
+                int up2 = RandomCount.random();
+                if (up == 99) {
                     ItemStack itemStack = new ItemStack(Material.COAL, 1); // 追加するアイテムの種類と個数を指定
                     player.getInventory().addItem(itemStack);
                     player.sendMessage("ハズレ");
+                }else if(up==87&&up2==87){
+                    player.getInventory().addItem(Items.luckyPickaxe);
+                    player.sendMessage("超レアツルハシゲット");
+                }else if(up==87&&up2==2){
+                    player.getInventory().addItem(Items.accessory_main);
+                    player.sendMessage("マイニングのアクセサリーゲット");
+                }else if(up==87&&up2==1){
+                    player.getInventory().addItem(Items.accessory_speed);
+                    player.sendMessage("スピードのアクセサリーゲット");
                 } else {
                     player.getInventory().addItem(Items.rarePickaxe);
                     player.sendMessage("レアツルハシゲット");
@@ -211,7 +247,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("500");
         meta.setCustomModelData(2);
-        meta.addEnchant(Enchantment.DIG_SPEED, 10, true);
+        meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
         item.setItemMeta(meta);
         menu.setItem(0, item);
 
@@ -219,7 +255,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta2 = item.getItemMeta();
         meta2.setDisplayName("3000");
         meta2.setCustomModelData(3);
-        meta2.addEnchant(Enchantment.DIG_SPEED, 20, true);
+        meta2.addEnchant(Enchantment.DIG_SPEED, 2, true);
         item2.setItemMeta(meta2);
         menu.setItem(1, item2);
 
@@ -227,7 +263,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta3 = item.getItemMeta();
         meta3.setDisplayName("10000");
         meta3.setCustomModelData(5);
-        meta3.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        meta3.addEnchant(Enchantment.DIG_SPEED, 3, true);
         item3.setItemMeta(meta3);
         menu.setItem(2, item3);
 
@@ -235,7 +271,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta4 = item.getItemMeta();
         meta4.setDisplayName("20000");
         meta4.setCustomModelData(6);
-        meta4.addEnchant(Enchantment.DIG_SPEED, 40, true);
+        meta4.addEnchant(Enchantment.DIG_SPEED, 4, true);
         item4.setItemMeta(meta4);
         menu.setItem(3, item4);
 
@@ -243,7 +279,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta5 = item.getItemMeta();
         meta5.setDisplayName("40000");
         meta5.setCustomModelData(7);
-        meta5.addEnchant(Enchantment.DIG_SPEED, 50, true);
+        meta5.addEnchant(Enchantment.DIG_SPEED, 5, true);
         item5.setItemMeta(meta5);
         menu.setItem(4, item5);
 
@@ -251,7 +287,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta6 = item.getItemMeta();
         meta6.setDisplayName("80000");
         meta6.setCustomModelData(8);
-        meta6.addEnchant(Enchantment.DIG_SPEED, 80, true);
+        meta6.addEnchant(Enchantment.DIG_SPEED, 7, true);
         item6.setItemMeta(meta6);
         menu.setItem(5, item6);
 
@@ -259,7 +295,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta7 = item.getItemMeta();
         meta7.setDisplayName("160000");
         meta7.setCustomModelData(9);
-        meta7.addEnchant(Enchantment.DIG_SPEED, 120, true);
+        meta7.addEnchant(Enchantment.DIG_SPEED, 8, true);
         item7.setItemMeta(meta7);
         menu.setItem(6, item7);
 
@@ -267,7 +303,7 @@ public final class Mine extends JavaPlugin implements Listener {
         ItemMeta meta8 = item.getItemMeta();
         meta8.setDisplayName("500000");
         meta8.setCustomModelData(10);
-        meta8.addEnchant(Enchantment.DIG_SPEED, 200, true);
+        meta8.addEnchant(Enchantment.DIG_SPEED, 10, true);
         item8.setItemMeta(meta8);
         menu.setItem(7, item8);
         //メニュー表示
@@ -382,6 +418,31 @@ public final class Mine extends JavaPlugin implements Listener {
                     }
                 }
             }
+        }
+    }
+    @EventHandler
+    public void onPlayerClick(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        if (item.getType() == Material.STONE_PICKAXE && item.getItemMeta() != null &&
+                item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 2) {
+            // カスタムモデルデータが2の石のピッケルを右クリックした場合
+
+            // 採掘速度上昇のポーションエフェクトを作成
+            PotionEffect hasteEffect = new PotionEffect(PotionEffectType.FAST_DIGGING, 200, 4);
+            player.sendMessage("採掘速度が上昇しました。");
+            // プレイヤーにポーションエフェクトを適用
+            player.addPotionEffect(hasteEffect);
+        }else if (item.getType() == Material.STONE_PICKAXE && item.getItemMeta() != null &&
+                    item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 10) {
+                // カスタムモデルデータが2の石のピッケルを右クリックした場合
+
+                // 採掘速度上昇のポーションエフェクトを作成
+                PotionEffect hasteEffect = new PotionEffect(PotionEffectType.SPEED, 100, 9);
+                player.sendMessage("移動速度が上昇しました。");
+                // プレイヤーにポーションエフェクトを適用
+                player.addPotionEffect(hasteEffect);
         }
     }
 }

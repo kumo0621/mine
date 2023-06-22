@@ -4,3 +4,9 @@ stone.level: 30
 stone.money: 3
 coal.level: 50
 coal.money: 5
+lapis_ore.level: 70
+lapis_ore.money: 7
+gold_ore.level: 100
+gold_ore.money: 10
+iron_ore.level: 150
+iron_ore.money: 15
