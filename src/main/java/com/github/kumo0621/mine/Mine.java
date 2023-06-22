@@ -1,6 +1,7 @@
 package com.github.kumo0621.mine;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -112,7 +113,7 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
-        } else if(block.getType()==Material.NETHERRACK) {
+        } else if (block.getType() == Material.NETHERRACK) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("netherrack.level");
             int moneyAmount = config.getInt("netherrack.money");
@@ -120,7 +121,7 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
-        } else if(block.getType()==Material.STONE) {
+        } else if (block.getType() == Material.STONE) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("stone.level");
             int moneyAmount = config.getInt("stone.money");
@@ -128,7 +129,7 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
-        } else if(block.getType()==Material.LAPIS_ORE) {
+        } else if (block.getType() == Material.LAPIS_ORE) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("lapis_ore.level");
             int moneyAmount = config.getInt("lapis_ore.money");
@@ -136,7 +137,7 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
-        } else if(block.getType()==Material.GOLD_ORE) {
+        } else if (block.getType() == Material.GOLD_ORE) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("gold_ore.level");
             int moneyAmount = config.getInt("gold_ore.money");
@@ -144,7 +145,7 @@ public final class Mine extends JavaPlugin implements Listener {
             int result = Integer.parseInt(String.valueOf(money + moneyAmount));
             moneyData.set(uuid + ".money", result);
             player.giveExp(expAmount);
-        } else if(block.getType()==Material.IRON_ORE) {
+        } else if (block.getType() == Material.IRON_ORE) {
             // 設定ファイルで許可されたブロックの場合の処理
             int expAmount = config.getInt("iron_ore.level");
             int moneyAmount = config.getInt("iron_ore.money");
@@ -181,6 +182,10 @@ public final class Mine extends JavaPlugin implements Listener {
                     sender.sendMessage("数値を指定してください。");
                 }
             }
+            case "lobby" -> {
+                Location targetLocation = new Location(player.getWorld(), 0, -40, 0); // B地点の座標を指定
+                player.teleport(targetLocation);
+            }
         }
 
         // configファイルに保存
@@ -203,27 +208,27 @@ public final class Mine extends JavaPlugin implements Listener {
                 event.setCancelled(true);
                 int up = RandomCount.random();
                 int up2 = RandomCount.random();
-                if (up == 99) {
-                    ItemStack itemStack = new ItemStack(Material.COAL, 1); // 追加するアイテムの種類と個数を指定
-                    player.getInventory().addItem(itemStack);
-                    player.sendMessage("ハズレ");
-                }else if(up==87&&up2==87){
+                if (up  == 99) {
+                    player.getInventory().addItem(Items.rarePickaxe);
+                    player.sendMessage("レアツルハシゲット");
+                } else if (up == 87 && up2 == 87) {
                     player.getInventory().addItem(Items.luckyPickaxe);
                     player.sendMessage("超レアツルハシゲット");
-                }else if(up==87&&up2==2){
+                } else if (up == 87 && up2 == 2) {
                     player.getInventory().addItem(Items.accessory_main);
                     player.sendMessage("マイニングのアクセサリーゲット");
-                }else if(up==87&&up2==1){
+                } else if (up == 87 && up2 == 1) {
                     player.getInventory().addItem(Items.accessory_speed);
                     player.sendMessage("スピードのアクセサリーゲット");
                 } else {
-                    player.getInventory().addItem(Items.rarePickaxe);
-                    player.sendMessage("レアツルハシゲット");
+                    ItemStack itemStack = new ItemStack(Material.COAL, 1); // 追加するアイテムの種類と個数を指定
+                    player.getInventory().addItem(itemStack);
+                    player.sendMessage("ハズレ");
                 }
             }
         } else if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.SHULKER_BOX) {
-                event.setCancelled(true);
-                openMenu(player);
+            event.setCancelled(true);
+            openMenu(player);
         }
         // configファイルに保存
         saveCustomConfig(moneyData, "money.yml");
@@ -236,6 +241,7 @@ public final class Mine extends JavaPlugin implements Listener {
     public static int getLevel(Player player) {
         return player.getLevel();
     }
+
     public void openMenu(Player player) {
         // メニューを開く処理
 
@@ -420,6 +426,7 @@ public final class Mine extends JavaPlugin implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onPlayerClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -434,15 +441,15 @@ public final class Mine extends JavaPlugin implements Listener {
             player.sendMessage("採掘速度が上昇しました。");
             // プレイヤーにポーションエフェクトを適用
             player.addPotionEffect(hasteEffect);
-        }else if (item.getType() == Material.STONE_PICKAXE && item.getItemMeta() != null &&
-                    item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 10) {
-                // カスタムモデルデータが2の石のピッケルを右クリックした場合
+        } else if (item.getType() == Material.STONE_PICKAXE && item.getItemMeta() != null &&
+                item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 10) {
+            // カスタムモデルデータが2の石のピッケルを右クリックした場合
 
-                // 採掘速度上昇のポーションエフェクトを作成
-                PotionEffect hasteEffect = new PotionEffect(PotionEffectType.SPEED, 100, 9);
-                player.sendMessage("移動速度が上昇しました。");
-                // プレイヤーにポーションエフェクトを適用
-                player.addPotionEffect(hasteEffect);
+            // 採掘速度上昇のポーションエフェクトを作成
+            PotionEffect hasteEffect = new PotionEffect(PotionEffectType.SPEED, 100, 9);
+            player.sendMessage("移動速度が上昇しました。");
+            // プレイヤーにポーションエフェクトを適用
+            player.addPotionEffect(hasteEffect);
         }
     }
 }

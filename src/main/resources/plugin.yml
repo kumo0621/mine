@@ -7,6 +7,8 @@ commands:
     permission: hito
   set:
     permission: op
+  lobby:
+    permission: hito
 permissions:
   op:
     default: op
