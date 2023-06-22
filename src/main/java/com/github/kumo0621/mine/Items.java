@@ -11,7 +11,12 @@ public class Items {
     public static ItemStack rarePickaxe;
     public static ItemStack intermediatePickaxe;
     public static ItemStack hardPickaxe;
-
+    public static ItemStack level3Pickaxe;
+    public static ItemStack level4Pickaxe;
+    public static ItemStack level5Pickaxe;
+    public static ItemStack level6Pickaxe;
+    public static ItemStack level7Pickaxe;
+    public static ItemStack level8Pickaxe;
     public static void init() {
 
         // アイテムの作成
@@ -48,8 +53,56 @@ public class Items {
         itemMeta4.setCustomModelData(3);
         itemMeta4.setUnbreakable(true);
         itemMeta4.setDisplayName("上級者のツルハシ");
-        itemMeta4.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        itemMeta4.addEnchant(Enchantment.DIG_SPEED, 20, true);
         hardPickaxe.setItemMeta(itemMeta4);
+
+        level3Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta5 = level3Pickaxe.getItemMeta();
+        itemMeta5.setCustomModelData(5);
+        itemMeta5.setUnbreakable(true);
+        itemMeta5.setDisplayName("ベテランのツルハシ");
+        itemMeta5.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        level3Pickaxe.setItemMeta(itemMeta5);
+
+        level4Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta6 = level4Pickaxe.getItemMeta();
+        itemMeta6.setCustomModelData(6);
+        itemMeta6.setUnbreakable(true);
+        itemMeta6.setDisplayName("すごくベテランのツルハシ");
+        itemMeta6.addEnchant(Enchantment.DIG_SPEED, 40, true);
+        level4Pickaxe.setItemMeta(itemMeta6);
+
+        level5Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta7 = level5Pickaxe.getItemMeta();
+        itemMeta7.setCustomModelData(7);
+        itemMeta7.setUnbreakable(true);
+        itemMeta7.setDisplayName("すごくすごいベテランのツルハシ");
+        itemMeta7.addEnchant(Enchantment.DIG_SPEED, 50, true);
+        level5Pickaxe.setItemMeta(itemMeta7);
+
+        level6Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta8 = level6Pickaxe.getItemMeta();
+        itemMeta8.setCustomModelData(8);
+        itemMeta8.setUnbreakable(true);
+        itemMeta8.setDisplayName("帝王のツルハシ");
+        itemMeta8.addEnchant(Enchantment.DIG_SPEED, 80, true);
+        level6Pickaxe.setItemMeta(itemMeta8);
+
+        level7Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta9 = level7Pickaxe.getItemMeta();
+        itemMeta9.setCustomModelData(9);
+        itemMeta9.setUnbreakable(true);
+        itemMeta9.setDisplayName("すごい帝王のツルハシ");
+        itemMeta9.addEnchant(Enchantment.DIG_SPEED, 120, true);
+        level7Pickaxe.setItemMeta(itemMeta9);
+
+        level8Pickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta itemMeta10 = level8Pickaxe.getItemMeta();
+        itemMeta10.setCustomModelData(10);
+        itemMeta10.setUnbreakable(true);
+        itemMeta10.setDisplayName("冥王のツルハシ");
+        itemMeta10.addEnchant(Enchantment.DIG_SPEED, 200, true);
+        level8Pickaxe.setItemMeta(itemMeta10);
     }
 
 }

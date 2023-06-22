@@ -214,14 +214,62 @@ public final class Mine extends JavaPlugin implements Listener {
         meta.addEnchant(Enchantment.DIG_SPEED, 10, true);
         item.setItemMeta(meta);
         menu.setItem(0, item);
+
         ItemStack item2 = new ItemStack(Material.WOODEN_PICKAXE);
         ItemMeta meta2 = item.getItemMeta();
         meta2.setDisplayName("3000");
         meta2.setCustomModelData(3);
-        meta2.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        meta2.addEnchant(Enchantment.DIG_SPEED, 20, true);
         item2.setItemMeta(meta2);
         menu.setItem(1, item2);
 
+        ItemStack item3 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta3 = item.getItemMeta();
+        meta3.setDisplayName("10000");
+        meta3.setCustomModelData(5);
+        meta3.addEnchant(Enchantment.DIG_SPEED, 30, true);
+        item3.setItemMeta(meta3);
+        menu.setItem(2, item3);
+
+        ItemStack item4 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta4 = item.getItemMeta();
+        meta4.setDisplayName("20000");
+        meta4.setCustomModelData(6);
+        meta4.addEnchant(Enchantment.DIG_SPEED, 40, true);
+        item4.setItemMeta(meta4);
+        menu.setItem(3, item4);
+
+        ItemStack item5 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta5 = item.getItemMeta();
+        meta5.setDisplayName("40000");
+        meta5.setCustomModelData(7);
+        meta5.addEnchant(Enchantment.DIG_SPEED, 50, true);
+        item5.setItemMeta(meta5);
+        menu.setItem(4, item5);
+
+        ItemStack item6 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta6 = item.getItemMeta();
+        meta6.setDisplayName("80000");
+        meta6.setCustomModelData(8);
+        meta6.addEnchant(Enchantment.DIG_SPEED, 80, true);
+        item6.setItemMeta(meta6);
+        menu.setItem(5, item6);
+
+        ItemStack item7 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta7 = item.getItemMeta();
+        meta7.setDisplayName("160000");
+        meta7.setCustomModelData(9);
+        meta7.addEnchant(Enchantment.DIG_SPEED, 120, true);
+        item7.setItemMeta(meta7);
+        menu.setItem(6, item7);
+
+        ItemStack item8 = new ItemStack(Material.WOODEN_PICKAXE);
+        ItemMeta meta8 = item.getItemMeta();
+        meta8.setDisplayName("500000");
+        meta8.setCustomModelData(10);
+        meta8.addEnchant(Enchantment.DIG_SPEED, 200, true);
+        item8.setItemMeta(meta8);
+        menu.setItem(7, item8);
         //メニュー表示
         player.openInventory(menu);
     }
@@ -253,11 +301,83 @@ public final class Mine extends JavaPlugin implements Listener {
                     Player player = (Player) event.getWhoClicked();
                     UUID uuid = player.getUniqueId();
                     int money = getMoney(player);
-                    if (money >= 500) {
+                    if (money >= 3000) {
                         int result = Integer.parseInt(String.valueOf(money - 3000));
                         moneyData.set(uuid + ".money", result);
                         event.setCancelled(true);
                         player.getInventory().addItem(Items.hardPickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 5) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 10000) {
+                        int result = Integer.parseInt(String.valueOf(money - 10000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level3Pickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 6) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 20000) {
+                        int result = Integer.parseInt(String.valueOf(money - 20000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level4Pickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 7) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 40000) {
+                        int result = Integer.parseInt(String.valueOf(money - 40000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level5Pickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 8) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 80000) {
+                        int result = Integer.parseInt(String.valueOf(money - 80000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level6Pickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 9) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 160000) {
+                        int result = Integer.parseInt(String.valueOf(money - 160000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level7Pickaxe);
+                        player.sendMessage("ツルハシを強化しました。");
+                    }
+                }
+                if (meta != null && meta.getCustomModelData() == 10) {
+                    Player player = (Player) event.getWhoClicked();
+                    UUID uuid = player.getUniqueId();
+                    int money = getMoney(player);
+                    if (money >= 500000) {
+                        int result = Integer.parseInt(String.valueOf(money - 500000));
+                        moneyData.set(uuid + ".money", result);
+                        event.setCancelled(true);
+                        player.getInventory().addItem(Items.level8Pickaxe);
                         player.sendMessage("ツルハシを強化しました。");
                     }
                 }
