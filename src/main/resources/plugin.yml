@@ -11,6 +11,8 @@ commands:
     permission: hito
   open:
     permission: hito
+  fly:
+    permission: hito
 permissions:
   op:
     default: op
